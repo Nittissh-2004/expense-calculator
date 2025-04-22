@@ -1,0 +1,76 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    font-family: Arial, sans-serif;
+    background: #f9f9f9;
+    padding: 20px;
+  }
+  .container {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .summary {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+  form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  form input, form select, form button {
+    flex: 1 1 45%;
+    padding: 10px;
+  }
+  #reset-btn {
+    background: gray;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  form button[type="submit"] {
+    background: green;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  .filters {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+  ul {
+    list-style: none;
+  }
+  li {
+    background: #f1f1f1;
+    padding: 10px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  li.income { border-left: 4px solid green; }
+  li.expense { border-left: 4px solid red; }
+  .actions button {
+    margin-left: 10px;
+  }
+  @media (max-width: 600px) {
+    form input, form select, form button {
+      flex: 1 1 100%;
+    }
+  }
+  
