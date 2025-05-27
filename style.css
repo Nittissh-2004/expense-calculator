@@ -1,76 +1,97 @@
-* {
+/* styles.css */
+body {
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-  }
-  body {
-    font-family: Arial, sans-serif;
-    background: #f9f9f9;
+    background-color: #f7f7f7;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
     padding: 20px;
-  }
-  .container {
-    max-width: 600px;
-    margin: auto;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-  }
-  h1 {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
     text-align: center;
-    margin-bottom: 20px;
-  }
-  .summary {
+    color: #333;
+}
+
+.form-container {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    font-weight: bold;
-  }
-  form {
-    display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 10px;
-    margin-bottom: 10px;
-  }
-  form input, form select, form button {
-    flex: 1 1 45%;
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input,
+select {
     padding: 10px;
-  }
-  #reset-btn {
-    background: gray;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+button {
+    padding: 10px;
+    font-size: 1rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+button#resetBtn {
+    background-color: #f44336;
+}
+
+button#resetBtn:hover {
+    background-color: #e53935;
+}
+
+.filters {
+    margin-bottom: 20px;
+}
+
+#overview {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.entries table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.entries th,
+.entries td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.entries td button {
+    padding: 5px 10px;
+    background-color: blue;
     color: white;
     border: none;
     cursor: pointer;
-  }
-  form button[type="submit"] {
-    background: green;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-  .filters {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 15px;
-  }
-  ul {
-    list-style: none;
-  }
-  li {
-    background: #f1f1f1;
-    padding: 10px;
-    margin-bottom: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  li.income { border-left: 4px solid green; }
-  li.expense { border-left: 4px solid red; }
-  .actions button {
-    margin-left: 10px;
-  }
-  @media (max-width: 600px) {
-    form input, form select, form button {
-      flex: 1 1 100%;
-    }
-  }
-  
+}
+
+.entries td button:hover {
+    background-color: darkblue;
+}

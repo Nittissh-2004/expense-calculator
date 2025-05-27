@@ -1,86 +1,139 @@
-const form = document.getElementById("entry-form");
-const list = document.getElementById("entry-list");
-const totalIncome = document.getElementById("total-income");
-const totalExpense = document.getElementById("total-expense");
-const balance = document.getElementById("balance");
-const resetBtn = document.getElementById("reset-btn");
-const filterRadios = document.querySelectorAll("input[name='filter']");
+// script.js
 
-let entries = JSON.parse(localStorage.getItem("entries")) || [];
-let editId = null;
+let totalIncome = 0;
+let totalExpense = 0;
+let entries = JSON.parse(localStorage.getItem('entries')) || [];
 
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const desc = document.getElementById("description").value;
-  const amt = parseFloat(document.getElementById("amount").value);
-  const type = document.getElementById("type").value;
+const typeSelect = document.getElementById('type');
+const descriptionInput = document.getElementById('description');
+const amountInput = document.getElementById('amount');
+const addButton = document.getElementById('addBtn');
+const resetButton = document.getElementById('resetBtn');
+const entriesTableBody = document.querySelector('#entriesTable tbody');
+const totalIncomeEl = document.getElementById('totalIncome');
+const totalExpenseEl = document.getElementById('totalExpense');
+const balanceEl = document.getElementById('balance');
+const filterRadios = document.getElementsByName('filter');
 
-  if (!desc || isNaN(amt)) return;
-
-  const newEntry = { id: editId || Date.now(), description: desc, amount: amt, type };
-
-  if (editId) {
-    entries = entries.map(e => e.id === editId ? newEntry : e);
-    editId = null;
-  } else {
-    entries.push(newEntry);
-  }
-
-  saveAndRender();
-  form.reset();
-});
-
-resetBtn.addEventListener("click", () => form.reset());
-
-filterRadios.forEach(radio =>
-  radio.addEventListener("change", () => renderEntries())
-);
-
-function renderEntries() {
-  const filter = document.querySelector("input[name='filter']:checked").value;
-  list.innerHTML = "";
-
-  let income = 0, expense = 0;
-
-  entries.filter(e => filter === "all" || e.type === filter).forEach(entry => {
-    const li = document.createElement("li");
-    li.classList.add(entry.type);
-    li.innerHTML = `
-      <span>${entry.description}: ₹${entry.amount}</span>
-      <span class="actions">
-        <button onclick="editEntry(${entry.id})">✏️</button>
-        <button onclick="deleteEntry(${entry.id})">🗑️</button>
-      </span>
-    `;
-    list.appendChild(li);
-  });
-
-  entries.forEach(e => {
-    if (e.type === "income") income += e.amount;
-    else expense += e.amount;
-  });
-
-  totalIncome.textContent = `₹${income}`;
-  totalExpense.textContent = `₹${expense}`;
-  balance.textContent = `₹${income - expense}`;
+// Function to update the total balance
+function updateBalance() {
+    const balance = totalIncome - totalExpense;
+    balanceEl.innerText = `Balance: $${balance}`;
+    totalIncomeEl.innerText = `Total Income: $${totalIncome}`;
+    totalExpenseEl.innerText = `Total Expense: $${totalExpense}`;
 }
 
-function editEntry(id) {
-  const entry = entries.find(e => e.id === id);
-  document.getElementById("description").value = entry.description;
-  document.getElementById("amount").value = entry.amount;
-  document.getElementById("type").value = entry.type;
-  editId = id;
+// Function to render entries in the table
+function renderEntries(filter = 'all') {
+    entriesTableBody.innerHTML = '';
+    let filteredEntries = entries;
+
+    if (filter !== 'all') {
+        filteredEntries = entries.filter(entry => entry.type === filter);
+    }
+
+    filteredEntries.forEach((entry, index) => {
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+            <td>${entry.type}</td>
+            <td>${entry.description}</td>
+            <td>$${entry.amount}</td>
+            <td>
+                <button onclick="editEntry(${index})">Edit</button>
+                <button onclick="deleteEntry(${index})">Delete</button>
+            </td>
+        `;
+        entriesTableBody.appendChild(row);
+    });
 }
 
-function deleteEntry(id) {
-  entries = entries.filter(e => e.id !== id);
-  saveAndRender();
+// Function to add a new entry
+function addEntry() {
+    const type = typeSelect.value;
+    const description = descriptionInput.value.trim();
+    const amount = parseFloat(amountInput.value);
+
+    if (description && !isNaN(amount)) {
+        const entry = { type, description, amount };
+
+        // Update totals
+        if (type === 'income') {
+            totalIncome += amount;
+        } else {
+            totalExpense += amount;
+        }
+
+        entries.push(entry);
+        localStorage.setItem('entries', JSON.stringify(entries)); // Save to local storage
+        renderEntries(getActiveFilter());
+        updateBalance();
+
+        // Reset inputs
+        descriptionInput.value = '';
+        amountInput.value = '';
+    } else {
+        alert('Please fill in both fields with valid data.');
+    }
 }
 
-function saveAndRender() {
-  localStorage.setItem("entries", JSON.stringify(entries));
-  renderEntries();
+// Function to delete an entry
+function deleteEntry(index) {
+    const entry = entries[index];
+    if (entry.type === 'income') {
+        totalIncome -= entry.amount;
+    } else {
+        totalExpense -= entry.amount;
+    }
+
+    entries.splice(index, 1);
+    localStorage.setItem('entries', JSON.stringify(entries)); // Save to local storage
+    renderEntries(getActiveFilter());
+    updateBalance();
 }
 
-renderEntries();
+// Function to edit an entry
+function editEntry(index) {
+    const entry = entries[index];
+    descriptionInput.value = entry.description;
+    amountInput.value = entry.amount;
+    typeSelect.value = entry.type;
+
+    // Remove the entry first to avoid duplication
+    deleteEntry(index);
+}
+
+// Function to reset input fields
+function resetInputs() {
+    descriptionInput.value = '';
+    amountInput.value = '';
+}
+
+// Function to get the selected filter
+function getActiveFilter() {
+    let activeFilter = 'all';
+    for (const radio of filterRadios) {
+        if (radio.checked) {
+            activeFilter = radio.value;
+            break;
+        }
+    }
+    return activeFilter;
+}
+
+// Event listener for the add button
+addButton.addEventListener('click', addEntry);
+
+// Event listener for the reset button
+resetButton.addEventListener('click', resetInputs);
+
+// Event listener for the filter buttons
+for (const radio of filterRadios) {
+    radio.addEventListener('change', () => {
+        renderEntries(getActiveFilter());
+    });
+}
+
+// Initial setup
+renderEntries(getActiveFilter());
+updateBalance();
